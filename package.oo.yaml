@@ -1,0 +1,6 @@
+version: 0.0.1
+icon: ./icon.png
+scripts:
+  bootstrap: |
+    set -e
+    poetry install --no-root
