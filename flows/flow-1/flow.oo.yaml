@@ -1,1 +1,29 @@
-nodes: []
+nodes:
+  - node_id: pack#1
+    title: "Pack images #1"
+    inputs_from:
+      - handle: images
+        value:
+          []
+        from_node:
+          - node_id: list_files_from_folder#1
+            output_handle: file_paths
+      - handle: title
+        value: test
+      - handle: format
+        value: cbz
+      - handle: pack_path
+        value: /oomol-driver/downloads/manga
+    task: self::pack
+  - node_id: list_files_from_folder#1
+    title: "List files from folder #1"
+    inputs_from:
+      - handle: folder
+        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children
+      - handle: sort
+        value: true
+      - handle: traverse
+        value: false
+      - handle: absolute_path
+        value: true
+    task: oomol-file::list_files_from_folder

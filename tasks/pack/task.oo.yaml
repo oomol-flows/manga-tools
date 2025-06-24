@@ -1,0 +1,107 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+inputs_def:
+  - handle: images
+    json_schema:
+      type: array
+      items:
+        type: string
+        ui:widget: file
+        ui:options:
+          excludeAll: false
+          filters:
+            - name: JPEG / JPG
+              extensions:
+                - jpg
+                - jpeg
+                - jpe
+                - jif
+                - jfif
+                - jfi
+            - name: PNG
+              extensions:
+                - png
+            - name: GIF
+              extensions:
+                - gif
+            - name: WebP
+              extensions:
+                - webp
+            - name: BMP
+              extensions:
+                - bmp
+            - name: TIFF
+              extensions:
+                - tiff
+                - tif
+            - name: AVIF
+              extensions:
+                - .avif
+      minItems: 0
+    value:
+      []
+  - handle: title
+    json_schema:
+      type: string
+    value:
+    nullable: true
+  - handle: format
+    json_schema:
+      enum:
+        - cbz
+        - cbr
+        - epub
+        - pdf
+      ui:options:
+        labels:
+          - CBZ
+          - CBR
+          - EPUB
+          - PDF
+    value:
+    nullable: true
+  - handle: pack_path
+    json_schema:
+      type: string
+      ui:widget: save
+      ui:options:
+        excludeAll: true
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: CBR
+            extensions:
+              - cbr
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+    value:
+    nullable: true
+outputs_def:
+  - handle: pack_path
+    json_schema:
+      type: string
+      ui:widget: save
+      ui:options:
+        excludeAll: true
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: CBR
+            extensions:
+              - cbr
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+title: Pack images
+description: pack an array of images into a comic file in a specific format

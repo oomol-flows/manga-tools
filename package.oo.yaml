@@ -4,3 +4,5 @@ scripts:
   bootstrap: |
     set -e
     poetry install --no-root
+dependencies:
+  oomol-file: 0.0.12

@@ -1,0 +1,21 @@
+{
+  "nodes": {
+    "pack#1": {
+      "rfNode": {
+        "position": {
+          "x": 603.1598930481283,
+          "y": -15.998695373535156
+        }
+      }
+    },
+    "list_files_from_folder#1": {
+      "contentWidth": 450,
+      "rfNode": {
+        "position": {
+          "x": 79.5,
+          "y": -15.998695373535156
+        }
+      }
+    }
+  }
+}
