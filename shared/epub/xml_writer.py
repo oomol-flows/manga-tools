@@ -3,11 +3,12 @@ import re
 from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
 from xml.etree.ElementTree import fromstring, tostring, Element
+from .utils import get_xmlns, extract_xmlns
 
 
 _MINETYPE_NAME = "mimetype"
 _TEMPLATE_EXT = ".template"
-_HEADER_PATTERN = re.compile(r"(<\?.*?\?>)|(<\!.*?>)")
+_HEADER_PATTERN = re.compile(r"(<\?.*?\?>)|(<\!.*?>)", flags=re.DOTALL)
 
 class XMLWriter:
   def __init__(self, output_path: Path) -> None:
@@ -25,7 +26,7 @@ class XMLWriter:
         continue
       self._zip.write(
         filename=self._epub_path / file,
-        arcname=file.as_posix(),
+        arcname=str(file.as_posix()),
       )
 
   @property
@@ -37,19 +38,23 @@ class XMLWriter:
     template_path = self._epub_path / template_name
     with open(template_path, "r", encoding="utf-8") as f:
       parts = [
-        part for part in re.split(_HEADER_PATTERN, f.read(), maxsplit=2, flags=re.DOTALL)
-        if not part or part.isspace()
+        part for part in _HEADER_PATTERN.split(f.read(), maxsplit=2)
+        if part and not part.isspace()
       ]
       element = fromstring(parts.pop())
       header = "\n".join(parts)
-      xmlns = element.attrib.pop("xmlns")
-      return header, xmlns, self._strip_namespace(element)
+      xmlns = extract_xmlns(element)
+      return header, xmlns, element
 
   def write(self, file: Path, header: str, xmlns: str, element: Element):
     target_path = self._epub_path / file
+    self._set_xmlns(element, xmlns)
     element.set("xmlns", xmlns)
     with open(target_path, "w", encoding="utf-8") as f:
-      f.write(header + "\n" + tostring(element, encoding="unicode"))
+      f.write(header + "\n" + tostring(
+        element,
+        encoding="unicode",
+      ))
 
   def __enter__(self) -> "XMLWriter":
     return self
@@ -67,8 +72,9 @@ class XMLWriter:
         for sub_file in self._iter_files(file):
           yield file / sub_file
 
-  def _strip_namespace(self, element: Element) -> Element:
-    element.tag = element.tag.split("}", 1)[-1]
+  def _set_xmlns(self, element: Element, xmlns: str) -> None:
+    element_xmlns, element_tag = get_xmlns(element)
+    if xmlns != element_xmlns:
+      element.tag = "{" + xmlns + "}" + element_tag
     for child in element:
-      self._strip_namespace(child)
-    return element
+      self._set_xmlns(child, xmlns)

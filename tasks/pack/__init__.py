@@ -53,8 +53,7 @@ def main(params: Inputs, context: Context) -> Outputs:
       raise ValueError(f"Image path {path} is not a file")
     raw_paths.append(path)
 
-  if pack_path.exists():
-    rmtree(pack_path)
+  pack_path= _clean_path(pack_path)
   title = (params["title"] or "").strip()
 
   if suffix == ".cbz":
@@ -78,7 +77,7 @@ def main(params: Inputs, context: Context) -> Outputs:
     )
   elif suffix == ".epub":
     temp_path = Path(context.tmp_pkg_dir) / context.job_id
-    rmtree(temp_path)
+    temp_path = _clean_path(temp_path)
     temp_path.mkdir(parents=True, exist_ok=True)
     generate_epub(
       title=title,
@@ -87,7 +86,13 @@ def main(params: Inputs, context: Context) -> Outputs:
       read_to_left=True,
       temp_path=temp_path,
     )
-  else:
-    raise ValueError(f"invalid suffix {suffix}")
 
   return { "pack_path": str(pack_path) }
+
+def _clean_path(path: Path) -> Path:
+  if path.exists():
+    if path.is_file():
+      path.unlink()
+    else:
+      rmtree(path)
+  return path
