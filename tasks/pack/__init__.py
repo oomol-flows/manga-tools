@@ -6,6 +6,7 @@ from shutil import rmtree
 
 from shared.archive import archive_with_zip
 from shared.pdf import generate_pdf
+from shared.epub import generate_epub
 
 
 #region generated meta
@@ -74,6 +75,17 @@ def main(params: Inputs, context: Context) -> Outputs:
       progress=lambda p: context.report_progress(
         progress=100*float(p)/len(raw_paths),
       ),
+    )
+  elif suffix == ".epub":
+    temp_path = Path(context.tmp_pkg_dir) / context.job_id
+    rmtree(temp_path)
+    temp_path.mkdir(parents=True, exist_ok=True)
+    generate_epub(
+      title=title,
+      image_paths=raw_paths,
+      output_path=pack_path,
+      read_to_left=True,
+      temp_path=temp_path,
     )
   else:
     raise ValueError(f"invalid suffix {suffix}")

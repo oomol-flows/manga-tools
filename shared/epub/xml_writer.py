@@ -28,7 +28,11 @@ class XMLWriter:
         arcname=file.as_posix(),
       )
 
-  def template(self, file: Path) -> tuple[str, Element]:
+  @property
+  def zip(self) -> ZipFile:
+    return self._zip
+
+  def template(self, file: Path) -> tuple[str, str, Element]:
     template_name = file.with_suffix(_TEMPLATE_EXT + file.suffix)
     template_path = self._epub_path / template_name
     with open(template_path, "r", encoding="utf-8") as f:
@@ -38,10 +42,12 @@ class XMLWriter:
       ]
       element = fromstring(parts.pop())
       header = "\n".join(parts)
-      return header, element
+      xmlns = element.attrib.pop("xmlns")
+      return header, xmlns, self._strip_namespace(element)
 
-  def write(self, file: Path, header: str, element: Element):
+  def write(self, file: Path, header: str, xmlns: str, element: Element):
     target_path = self._epub_path / file
+    element.set("xmlns", xmlns)
     with open(target_path, "w", encoding="utf-8") as f:
       f.write(header + "\n" + tostring(element, encoding="unicode"))
 
@@ -60,3 +66,9 @@ class XMLWriter:
       elif file.is_dir():
         for sub_file in self._iter_files(file):
           yield file / sub_file
+
+  def _strip_namespace(self, element: Element) -> Element:
+    element.tag = element.tag.split("}", 1)[-1]
+    for child in element:
+      self._strip_namespace(child)
+    return element

@@ -10,13 +10,18 @@
     <meta name="RegionMagnification" content="true" />
     <meta name="fixed-layout" content="true" />
     <meta name="orientation-lock" content="portrait" />
+    <meta name="primary-writing-mode" />
+    <meta name="original-resolution" />
+    <meta name="cover"/>
+    <dc:title></dc:title>
   </metadata>
   <manifest>
-    <item id="ncx" href="xml/contents.ncx" media-type="application/x-dtbncx+xml" />
-    <item id="css" href="css/style.css" media-type="text/css"/>
+    <item id="ncx" href="./contents.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="css" href="../css/style.css" media-type="text/css"/>
   </manifest>
   <spine page-progression-direction="rtl" toc="ncx">
   </spine>
   <guide>
+    <reference type="cover" title="Cover" />
   </guide>
 </package>

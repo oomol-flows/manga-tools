@@ -11,7 +11,7 @@ nodes:
       - handle: title
         value: test
       - handle: format
-        value: pdf
+        value: epub
       - handle: pack_path
         value: /oomol-driver/downloads/manga
     task: self::pack

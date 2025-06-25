@@ -5,7 +5,8 @@ extension-pkg-whitelist=cv2
 [MESSAGES CONTROL]
 disable=
   C,
-  redefined-builtin
+  redefined-builtin,
+  too-many-arguments,
 
 [FORMAT]
 # Maximum number of characters on a single line.
