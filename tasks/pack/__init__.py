@@ -5,6 +5,7 @@ from typing import cast, Literal
 from shutil import rmtree
 
 from shared.archive import archive_with_zip
+from shared.pdf import generate_pdf
 
 
 #region generated meta
@@ -58,6 +59,16 @@ def main(params: Inputs, context: Context) -> Outputs:
   if suffix == ".cbz":
     archive_with_zip(
       title=title,
+      raw_files=raw_paths,
+      output_path=pack_path,
+      progress=lambda p: context.report_progress(
+        progress=100*float(p)/len(raw_paths),
+      ),
+    )
+  elif suffix == ".pdf":
+    generate_pdf(
+      title=title,
+      dpi=96,
       raw_files=raw_paths,
       output_path=pack_path,
       progress=lambda p: context.report_progress(
