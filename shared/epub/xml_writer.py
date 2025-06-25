@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
 from xml.etree.ElementTree import fromstring, tostring, Element
-from .utils import get_xmlns, extract_xmlns
+from .utils import extract_namespace
 
 
 _MINETYPE_NAME = "mimetype"
@@ -33,7 +33,7 @@ class XMLWriter:
   def zip(self) -> ZipFile:
     return self._zip
 
-  def template(self, file: Path) -> tuple[str, str, Element]:
+  def template(self, file: Path) -> tuple[str, Element]:
     template_name = file.with_suffix(_TEMPLATE_EXT + file.suffix)
     template_path = self._epub_path / template_name
     with open(template_path, "r", encoding="utf-8") as f:
@@ -43,13 +43,12 @@ class XMLWriter:
       ]
       element = fromstring(parts.pop())
       header = "\n".join(parts)
-      xmlns = extract_xmlns(element)
-      return header, xmlns, element
+      namespace = extract_namespace(element)
+      element.set("xmlns", namespace)
+      return header, element
 
-  def write(self, file: Path, header: str, xmlns: str, element: Element):
+  def write(self, file: Path, header: str, element: Element):
     target_path = self._epub_path / file
-    self._set_xmlns(element, xmlns)
-    element.set("xmlns", xmlns)
     with open(target_path, "w", encoding="utf-8") as f:
       f.write(header + "\n" + tostring(
         element,
@@ -71,10 +70,3 @@ class XMLWriter:
       elif file.is_dir():
         for sub_file in self._iter_files(file):
           yield file / sub_file
-
-  def _set_xmlns(self, element: Element, xmlns: str) -> None:
-    element_xmlns, element_tag = get_xmlns(element)
-    if xmlns != element_xmlns:
-      element.tag = "{" + xmlns + "}" + element_tag
-    for child in element:
-      self._set_xmlns(child, xmlns)

@@ -30,25 +30,18 @@ def iter_ids(image_paths: list[Any]) -> Generator[str, None, None]:
 
 _NS_PATTERN = re.compile(r"^{(.+)}")
 
-def extract_xmlns(element: Element, root_xmlns: str | None = None) -> str:
+def extract_namespace(element: Element, root_ns: str | None = None) -> str:
   matches = _NS_PATTERN.match(element.tag)
   if not matches:
     return ""
 
-  xmlns = matches.group(1)
-  if root_xmlns is None or root_xmlns == xmlns:
+  namespace = matches.group(1)
+  if root_ns is None or root_ns == namespace:
     element.tag = _NS_PATTERN.sub("", element.tag)
-  if root_xmlns is None:
-    root_xmlns = xmlns
+  if root_ns is None:
+    root_ns = namespace
 
   for child in element:
-    extract_xmlns(child, root_xmlns)
+    extract_namespace(child, root_ns)
 
-  return xmlns
-
-def get_xmlns(element: Element) -> tuple[str | None, str]:
-  matches = _NS_PATTERN.match(element.tag)
-  if matches:
-    return matches.group(1), _NS_PATTERN.sub("", element.tag)
-  else:
-    return None, element.tag
+  return namespace

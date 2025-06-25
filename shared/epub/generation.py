@@ -32,7 +32,7 @@ def _write_main_opf(
     ) -> None:
 
   opf_path = Path("content", "main.opf")
-  header, xmlns, root_xml = writer.template(opf_path)
+  header, root_xml = writer.template(opf_path)
   manifest_xml = find_element(root_xml, "manifest")
 
   for id in iter_ids(image_infos):
@@ -112,7 +112,7 @@ def _write_main_opf(
   for to_remove in to_removes:
     metadata_xml.remove(to_remove)
 
-  writer.write(opf_path, header, xmlns, root_xml)
+  writer.write(opf_path, header, root_xml)
 
 def _write_contents_ncx(
       writer: XMLWriter,
@@ -121,7 +121,7 @@ def _write_contents_ncx(
     ) -> None:
 
   ncx_path = Path("content", "contents.ncx")
-  header, xmlns, root_xml = writer.template(ncx_path)
+  header, root_xml = writer.template(ncx_path)
   head_xml = find_element(root_xml, "head")
 
   for sub_xml in head_xml:
@@ -159,7 +159,7 @@ def _write_contents_ncx(
     nav_point_xml.append(content_xml)
     nav_map_xml.append(nav_point_xml)
 
-  writer.write(ncx_path, header, xmlns, root_xml)
+  writer.write(ncx_path, header, root_xml)
 
 def _write_images(writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]) -> None:
   for id, (image_path, format) in zip(iter_ids(image_infos), image_infos):
@@ -175,7 +175,7 @@ def _write_pages(
     ) -> None:
 
   page_path = Path("content", "pages", "page.html")
-  header, xmlns, template_xml = writer.template(page_path)
+  header, template_xml = writer.template(page_path)
 
   for id, (_, format) in zip(iter_ids(image_infos), image_infos):
     root_xml = clone_element(template_xml)
@@ -199,4 +199,4 @@ def _write_pages(
     img_xml.set("alt", id)
 
     page_path = page_path.parent / f"page_{id}.html"
-    writer.write(page_path, header, xmlns, root_xml)
+    writer.write(page_path, header, root_xml)
