@@ -2,8 +2,9 @@ from curses import raw
 from pathlib import Path
 from oocana import Context
 from typing import cast, Literal
+from shutil import rmtree
 
-from shared.compress import compress_with_zip
+from shared.archive import archive_with_zip
 
 
 #region generated meta
@@ -11,14 +12,14 @@ import typing
 class Inputs(typing.TypedDict):
   images: list[str]
   title: str | None
-  format: typing.Literal["cbz", "cbr", "epub", "pdf"] | None
+  format: typing.Literal["cbz", "epub", "pdf"] | None
   pack_path: str | None
 class Outputs(typing.TypedDict):
   pack_path: str
 #endregion
 
-_Suffix = Literal[".cbz", ".cbr", ".epub", ".pdf"]
-_SUFFIX_TUPPLE: tuple[_Suffix, ...] = (".cbz", ".cbr", ".epub", ".pdf")
+_Suffix = Literal[".cbz", ".epub", ".pdf"]
+_SUFFIX_TUPPLE: tuple[_Suffix, ...] = (".cbz", ".epub", ".pdf")
 
 def main(params: Inputs, context: Context) -> Outputs:
   format = params["format"]
@@ -50,9 +51,12 @@ def main(params: Inputs, context: Context) -> Outputs:
       raise ValueError(f"Image path {path} is not a file")
     raw_paths.append(path)
 
+  if pack_path.exists():
+    rmtree(pack_path)
   title = (params["title"] or "").strip()
+
   if suffix == ".cbz":
-    compress_with_zip(
+    archive_with_zip(
       title=title,
       raw_files=raw_paths,
       output_path=pack_path,

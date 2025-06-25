@@ -51,13 +51,11 @@ inputs_def:
     json_schema:
       enum:
         - cbz
-        - cbr
         - epub
         - pdf
       ui:options:
         labels:
           - CBZ
-          - CBR
           - EPUB
           - PDF
     value:
@@ -72,9 +70,6 @@ inputs_def:
           - name: CBZ
             extensions:
               - cbz
-          - name: CBR
-            extensions:
-              - cbr
           - name: EPUB
             extensions:
               - epub

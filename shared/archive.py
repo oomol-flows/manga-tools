@@ -3,7 +3,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
 
 
-def compress_with_zip(
+def archive_with_zip(
     title: str,
     raw_files: list[Path],
     output_path: Path,
