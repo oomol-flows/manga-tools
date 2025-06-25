@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<package version="3.0" unique-identifier="KBOOKID" xmlns="http://www.idpf.org/2007/opf"
+  prefix="rendition: http://www.idpf.org/vocab/rendition/#">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <meta property="rendition:layout">pre-paginated</meta>
+    <meta property="rendition:spread">landscape</meta>
+    <meta name="book-type" content="comic" />
+    <meta name="zero-gutter" content="true" />
+    <meta name="zero-margin" content="true" />
+    <meta name="RegionMagnification" content="true" />
+    <meta name="fixed-layout" content="true" />
+    <meta name="orientation-lock" content="portrait" />
+  </metadata>
+  <manifest>
+    <item id="ncx" href="xml/contents.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="css" href="css/style.css" media-type="text/css"/>
+  </manifest>
+  <spine page-progression-direction="rtl" toc="ncx">
+  </spine>
+  <guide>
+  </guide>
+</package>
