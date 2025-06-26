@@ -41,3 +41,27 @@ nodes:
       - handle: clean_output_path
         value: true
     task: self::unarchive
+  - node_id: unarchive2images#1
+    title: "Unarchive to images #1"
+    inputs_from:
+      - handle: archive_path
+        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
+          GetComics.INFO.cbz
+    subflow: self::unarchive2images
+  - node_id: transform#1
+    title: "Transform #1"
+    inputs_from:
+      - handle: source_path
+        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
+          GetComics.INFO.cbz
+      - handle: target_path
+        value: /oomol-driver/downloads/猎魔人.epub
+      - handle: format
+        value: null
+      - handle: title
+        value:
+      - handle: author
+        value:
+      - handle: reading_order
+        value:
+    subflow: self::transform

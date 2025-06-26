@@ -1,0 +1,52 @@
+{
+  "nodes": {
+    "archive#1": {
+      "rfNode": {
+        "position": {
+          "x": 1805.6145313011216,
+          "y": -46
+        }
+      }
+    },
+    "unarchive2images#1": {
+      "rfNode": {
+        "position": {
+          "x": 352.7315513655963,
+          "y": -100.9878676116958
+        }
+      }
+    },
+    "+python#1": {
+      "contentWidth": 558.5278737315344,
+      "rfNode": {
+        "position": {
+          "x": 963.3745786935747,
+          "y": 99.2059410288183
+        }
+      },
+      "sections": {
+        "scriptlet": {
+          "cardCollapsed": true
+        }
+      }
+    }
+  },
+  "pseudoNodes": {
+    "input": {
+      "rfNode": {
+        "position": {
+          "x": -167.6925351071693,
+          "y": 71
+        }
+      }
+    },
+    "output": {
+      "rfNode": {
+        "position": {
+          "x": 2289.0009110397723,
+          "y": 206
+        }
+      }
+    }
+  }
+}

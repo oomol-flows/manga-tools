@@ -1,0 +1,136 @@
+inputs_def:
+  - handle: archive_path
+    json_schema:
+      type: string
+      ui:widget: file
+      ui:options:
+        excludeAll: false
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+    nullable: false
+outputs_def:
+  - handle: images
+    json_schema:
+      type: array
+      items:
+        type: string
+        ui:widget: file
+        ui:options:
+          excludeAll: false
+          filters:
+            - name: JPEG / JPG
+              extensions:
+                - jpg
+                - jpeg
+                - jpe
+                - jif
+                - jfif
+                - jfi
+            - name: PNG
+              extensions:
+                - png
+            - name: GIF
+              extensions:
+                - gif
+            - name: WebP
+              extensions:
+                - webp
+            - name: BMP
+              extensions:
+                - bmp
+            - name: TIFF
+              extensions:
+                - tiff
+                - tif
+            - name: AVIF
+              extensions:
+                - .avif
+      minItems: 0
+    nullable: false
+    description: Output
+  - handle: format
+    json_schema:
+      enum:
+        - cbz
+        - epub
+        - pdf
+      ui:options:
+        labels:
+          - CBZ
+          - EPUB
+          - PDF
+    nullable: false
+  - handle: title
+    json_schema:
+      type: string
+    nullable: true
+  - handle: author
+    json_schema:
+      type: string
+    nullable: true
+  - handle: reading_order
+    json_schema:
+      enum:
+        - to-right
+        - to-left
+      ui:options:
+        labels:
+          - from left to right
+          - from right to left
+    nullable: false
+nodes:
+  - node_id: unarchive#1
+    title: "Uncarchive to directory #1"
+    inputs_from:
+      - handle: archive_path
+        from_flow:
+          - input_handle: archive_path
+      - handle: output_path
+        value: null
+      - handle: clean_output_path
+        value: false
+    task: self::unarchive
+  - node_id: list_files_from_folder#1
+    title: "List files from folder #1"
+    inputs_from:
+      - handle: folder
+        from_node:
+          - node_id: unarchive#1
+            output_handle: output_path
+      - handle: sort
+        value: true
+      - handle: traverse
+        value: false
+      - handle: absolute_path
+        value: true
+    task: oomol-file::list_files_from_folder
+title: Unarchive to images
+outputs_from:
+  - handle: format
+    from_node:
+      - node_id: unarchive#1
+        output_handle: format
+  - handle: title
+    from_node:
+      - node_id: unarchive#1
+        output_handle: title
+  - handle: author
+    from_node:
+      - node_id: unarchive#1
+        output_handle: author
+  - handle: reading_order
+    from_node:
+      - node_id: unarchive#1
+        output_handle: reading_order
+  - handle: images
+    from_node:
+      - node_id: list_files_from_folder#1
+        output_handle: file_paths

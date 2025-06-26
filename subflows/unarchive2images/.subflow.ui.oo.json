@@ -1,0 +1,40 @@
+{
+  "nodes": {
+    "unarchive#1": {
+      "rfNode": {
+        "position": {
+          "x": 490.992358609218,
+          "y": -100
+        }
+      }
+    },
+    "list_files_from_folder#1": {
+      "contentWidth": 427.33564253642953,
+      "rfNode": {
+        "position": {
+          "x": 1044.6146601761702,
+          "y": -174.7976205364808
+        }
+      }
+    }
+  },
+  "pseudoNodes": {
+    "input": {
+      "contentWidth": 350,
+      "rfNode": {
+        "position": {
+          "x": 70,
+          "y": -100
+        }
+      }
+    },
+    "output": {
+      "rfNode": {
+        "position": {
+          "x": 1598.59866962306,
+          "y": 152.34961456597452
+        }
+      }
+    }
+  }
+}

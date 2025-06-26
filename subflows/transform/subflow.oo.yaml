@@ -1,0 +1,235 @@
+inputs_def:
+  - handle: source_path
+    json_schema:
+      type: string
+      ui:widget: file
+      ui:options:
+        excludeAll: false
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+    nullable: false
+  - handle: target_path
+    json_schema:
+      type: string
+      ui:widget: save
+      ui:options:
+        excludeAll: true
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+    nullable: true
+    value:
+  - handle: format
+    json_schema:
+      enum:
+        - cbz
+        - epub
+        - pdf
+      ui:options:
+        labels:
+          - CBZ
+          - EPUB
+          - PDF
+    nullable: true
+    value:
+  - handle: title
+    json_schema:
+      type: string
+    nullable: true
+    value:
+  - handle: author
+    json_schema:
+      type: string
+    nullable: true
+    value:
+  - handle: reading_order
+    json_schema:
+      enum:
+        - to-right
+        - to-left
+      ui:options:
+        labels:
+          - from left to right
+          - from right to left
+    nullable: true
+    value: to-right
+outputs_def:
+  - handle: target_path
+    json_schema:
+      type: string
+      ui:widget: save
+      ui:options:
+        excludeAll: true
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: CBR
+            extensions:
+              - cbr
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+    nullable: false
+nodes:
+  - node_id: archive#1
+    title: "Archive images #1"
+    inputs_from:
+      - handle: images
+        value:
+          []
+        from_node:
+          - node_id: unarchive2images#1
+            output_handle: images
+      - handle: format
+        value: null
+        from_flow:
+          - input_handle: format
+      - handle: pack_path
+        value: null
+        from_flow:
+          - input_handle: target_path
+      - handle: title
+        value: null
+        from_flow:
+          []
+        from_node:
+          - node_id: +python#1
+            output_handle: title
+      - handle: author
+        value: null
+        from_flow:
+          []
+        from_node:
+          - node_id: +python#1
+            output_handle: author
+      - handle: reading_order
+        value: to-right
+        from_flow:
+          []
+        from_node:
+          - node_id: +python#1
+            output_handle: reading_order
+    task: self::archive
+  - node_id: unarchive2images#1
+    title: "Unarchive to images #1"
+    inputs_from:
+      - handle: archive_path
+        from_flow:
+          - input_handle: source_path
+    subflow: self::unarchive2images
+  - node_id: +python#1
+    title: "Merge params"
+    icon: ":logos:python:"
+    task:
+      ui:
+        default_width: 450
+      inputs_def:
+        - handle: title
+          json_schema:
+            type: string
+          nullable: true
+        - handle: author
+          json_schema:
+            type: string
+          nullable: true
+        - handle: reading_order
+          json_schema:
+            enum:
+              - to-right
+              - to-left
+            ui:options:
+              labels:
+                - from left to right
+                - from right to left
+          nullable: false
+        - handle: input_title
+          description: Input
+          json_schema:
+            type: string
+          nullable: true
+        - handle: input_author
+          json_schema:
+            type: string
+          nullable: true
+        - handle: input_reading_order
+          json_schema:
+            enum:
+              - to-right
+              - to-left
+            ui:options:
+              labels:
+                - from left to right
+                - from right to left
+          nullable: true
+      outputs_def:
+        - handle: title
+          json_schema:
+            type: string
+          nullable: true
+        - handle: author
+          json_schema:
+            type: string
+          nullable: true
+        - handle: reading_order
+          json_schema:
+            enum:
+              - to-right
+              - to-left
+            ui:options:
+              labels:
+                - from left to right
+                - from right to left
+          nullable: false
+      executor:
+        name: python
+        options:
+          entry: scriptlets/+scriptlet#1.py
+    inputs_from:
+      - handle: input_title
+        from_flow:
+          - input_handle: title
+      - handle: input_author
+        value:
+        from_flow:
+          - input_handle: author
+      - handle: input_reading_order
+        value: to-right
+        from_flow:
+          - input_handle: reading_order
+      - handle: title
+        from_node:
+          - node_id: unarchive2images#1
+            output_handle: title
+      - handle: author
+        from_node:
+          - node_id: unarchive2images#1
+            output_handle: author
+      - handle: reading_order
+        from_node:
+          - node_id: unarchive2images#1
+            output_handle: reading_order
+title: Transform
+outputs_from:
+  - handle: target_path
+    from_node:
+      - node_id: archive#1
+        output_handle: pack_path
