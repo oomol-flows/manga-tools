@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
 from xml.etree.ElementTree import fromstring, tostring, Element
-from .utils import extract_namespace
+from .utils import iter_files, extract_namespace
 
 
 _MINETYPE_NAME = "mimetype"
@@ -18,7 +18,7 @@ class XMLWriter:
 
     # minetype must be the first file (for EPUB)
     self._zip.write(mimetype_path, _MINETYPE_NAME)
-    for file in self._iter_files(self._epub_path):
+    for file in iter_files(self._epub_path):
       if file.name == _MINETYPE_NAME:
         continue
       suffixes = file.suffixes
@@ -48,25 +48,15 @@ class XMLWriter:
       return header, element
 
   def write(self, file: Path, header: str, element: Element):
-    target_path = self._epub_path / file
-    with open(target_path, "w", encoding="utf-8") as f:
-      f.write(header + "\n" + tostring(
-        element,
-        encoding="unicode",
-      ))
+    content = tostring(element, encoding="unicode")
+    content = "\n".join((header, content))
+    self._zip.writestr(
+      zinfo_or_arcname=file.as_posix(),
+      data=content.encode("utf-8"),
+    )
 
   def __enter__(self) -> "XMLWriter":
     return self
 
   def __exit__(self, type, value, traceback) -> None:
     self._zip.close()
-
-  def _iter_files(self, root_path: Path):
-    for file in root_path.iterdir():
-      if file.name.startswith("."):
-        continue
-      if file.is_file():
-        yield file
-      elif file.is_dir():
-        for sub_file in self._iter_files(file):
-          yield file / sub_file

@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element
 
 from .xml_writer import XMLWriter
 from .image import preprocess_images, ImageFormat
-from .utils import iter_ids, clone_element, find_element
+from .utils import iter_ids, clone_element, find_element, split_tag_and_namespace
 
 
 def generate_epub(
@@ -65,7 +65,7 @@ def _write_main_opf(
     })
     if is_first_image:
       is_first_image = False
-      manifest_xml.set("properties", "cover-image")
+      item_xml.set("properties", "cover-image")
       cover_id = id
       cover_href = href
     manifest_xml.append(item_xml)
@@ -102,12 +102,14 @@ def _write_main_opf(
         if cover_id is None:
           to_removes.append(child_xml)
         else:
-          child_xml.set("content", cover_id)
-    elif child_xml.tag == "dc:title":
-      if title:
-        child_xml.text = title
-      else:
-        to_removes.append(child_xml)
+          child_xml.set("content", f"image_{cover_id}")
+    else:
+      pure_tag, _ = split_tag_and_namespace(child_xml.tag)
+      if pure_tag == "title":
+        if title:
+          child_xml.text = title
+        else:
+          to_removes.append(child_xml)
 
   for to_remove in to_removes:
     metadata_xml.remove(to_remove)
@@ -194,7 +196,7 @@ def _write_pages(
         continue
       sub_xml.set("content", f"width={width}, height={height}")
 
-    img_xml = find_element(root_xml, "div", "div", "img")
+    img_xml = find_element(root_xml, "body", "div", "div", "img")
     img_xml.set("src", f"../images/image-{id}.{format.lower()}")
     img_xml.set("alt", id)
 

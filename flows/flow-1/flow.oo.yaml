@@ -13,7 +13,7 @@ nodes:
       - handle: format
         value: epub
       - handle: pack_path
-        value: /oomol-driver/downloads/manga
+        value: /oomol-driver/downloads/test
     task: self::pack
   - node_id: list_files_from_folder#1
     title: "List files from folder #1"
