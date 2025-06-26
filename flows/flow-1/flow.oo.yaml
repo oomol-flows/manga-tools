@@ -18,7 +18,7 @@ nodes:
         value:
       - handle: reading_order
         value: to-right
-    task: self::pack
+    task: self::archive
   - node_id: list_files_from_folder#1
     title: "List files from folder #1"
     inputs_from:

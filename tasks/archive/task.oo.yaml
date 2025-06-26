@@ -113,5 +113,5 @@ outputs_def:
           - name: PDF
             extensions:
               - pdf
-title: Pack images
+title: Archive images
 description: pack an array of images into a comic file in a specific format
