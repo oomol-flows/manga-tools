@@ -5,7 +5,7 @@ from PIL import Image
 
 
 def generate_pdf(
-    title: str,
+    title: str | None,
     dpi: int,
     raw_files: list[Path],
     output_path: Path,
@@ -14,7 +14,7 @@ def generate_pdf(
 
   points = 72 # inch = 72 points
   pdf = FPDF()
-  if title:
+  if title is not None:
     pdf.set_title(title)
 
   for index, raw_file in enumerate(raw_files):

@@ -13,9 +13,11 @@ from shared.epub import generate_epub
 import typing
 class Inputs(typing.TypedDict):
   images: list[str]
-  title: str | None
   format: typing.Literal["cbz", "epub", "pdf"] | None
   pack_path: str | None
+  title: str | None
+  author: str | None
+  reading_order: typing.Literal["to-right", "to-left"]
 class Outputs(typing.TypedDict):
   pack_path: str
 #endregion
@@ -31,6 +33,9 @@ def main(params: Inputs, context: Context) -> Outputs:
   if format is not None:
     suffix = cast(_Suffix, f".{format}")
 
+  title = _normalize_str(params["title"])
+  author = _normalize_str(params["author"])
+
   if pack_path is None:
     workspace_path = Path(context.session_dir) / "manga-tools"
     pack_path = workspace_path / f"{context.job_id}{suffix}"
@@ -39,6 +44,8 @@ def main(params: Inputs, context: Context) -> Outputs:
   else:
     pack_path = Path(pack_path)
     pack_suffix = pack_path.suffix.lower()
+    if title is None:
+      title = pack_path.stem
     if pack_suffix in _SUFFIX_TUPPLE:
       suffix = cast(_Suffix, pack_suffix)
     else:
@@ -54,7 +61,6 @@ def main(params: Inputs, context: Context) -> Outputs:
     raw_paths.append(path)
 
   pack_path= _clean_path(pack_path)
-  title = (params["title"] or "").strip()
 
   if suffix == ".cbz":
     archive_with_zip(
@@ -81,13 +87,21 @@ def main(params: Inputs, context: Context) -> Outputs:
     temp_path.mkdir(parents=True, exist_ok=True)
     generate_epub(
       title=title,
+      author=author,
       image_paths=raw_paths,
       output_path=pack_path,
-      read_to_left=True,
       temp_path=temp_path,
+      read_to_left=(params["reading_order"] == "to-left"),
     )
-
   return { "pack_path": str(pack_path) }
+
+def _normalize_str(param: str | None) -> str | None:
+  if param is None:
+    return None
+  param = param.strip()
+  if not param:
+    return None
+  return param
 
 def _clean_path(path: Path) -> Path:
   if path.exists():

@@ -9,11 +9,15 @@ nodes:
           - node_id: list_files_from_folder#1
             output_handle: file_paths
       - handle: title
-        value: test
+        value:
       - handle: format
         value: epub
       - handle: pack_path
-        value: /oomol-driver/downloads/test
+        value: /oomol-driver/downloads/猎魔人
+      - handle: author
+        value:
+      - handle: reading_order
+        value: to-right
     task: self::pack
   - node_id: list_files_from_folder#1
     title: "List files from folder #1"

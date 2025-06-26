@@ -4,7 +4,7 @@ from zipfile import ZipFile, ZIP_STORED
 
 
 def archive_with_zip(
-    title: str,
+    title: str | None,
     raw_files: list[Path],
     output_path: Path,
     progress: Callable[[int], None],
@@ -15,11 +15,11 @@ def archive_with_zip(
       zip.write(raw_path, file_name)
       progress(i + 1)
 
-def _iter_files(title: str, raw_files: list[Path]) -> Generator[tuple[str, Path], Any, None]:
+def _iter_files(title: str | None, raw_files: list[Path]) -> Generator[tuple[str, Path], Any, None]:
   max_digits = len(str(len(raw_files)))
   for index, raw_path in enumerate(raw_files):
     file_name = str(index + 1).zfill(max_digits)
-    if title:
+    if title is not None:
       file_name: str = f"{title}-{file_name}"
     suffix = "".join(raw_path.suffixes)
     file_name = f"{file_name}{suffix}"

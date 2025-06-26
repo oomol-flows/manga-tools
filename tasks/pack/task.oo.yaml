@@ -42,11 +42,6 @@ inputs_def:
       minItems: 0
     value:
       []
-  - handle: title
-    json_schema:
-      type: string
-    value:
-    nullable: true
   - handle: format
     json_schema:
       enum:
@@ -78,6 +73,26 @@ inputs_def:
               - pdf
     value:
     nullable: true
+  - handle: title
+    json_schema:
+      type: string
+    value:
+    nullable: true
+  - handle: author
+    json_schema:
+      type: string
+    nullable: true
+    value:
+  - handle: reading_order
+    json_schema:
+      enum:
+        - to-right
+        - to-left
+      ui:options:
+        labels:
+          - from left to right
+          - from right to left
+    value: to-right
 outputs_def:
   - handle: pack_path
     json_schema:

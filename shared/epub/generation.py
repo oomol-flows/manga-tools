@@ -9,7 +9,8 @@ from .utils import iter_ids, clone_element, find_element
 
 
 def generate_epub(
-      title: str,
+      title: str | None,
+      author: str | None,
       image_paths: list[Path],
       temp_path: Path,
       output_path: Path,
@@ -20,14 +21,15 @@ def generate_epub(
   identifer = uuid4().hex
 
   with XMLWriter(output_path) as writer:
-    _write_main_opf(writer, title, identifer, image_infos, width, height, read_to_left)
+    _write_main_opf(writer, title, author, identifer, image_infos, width, height, read_to_left)
     _write_contents_ncx(writer, title, identifer, image_infos)
     _write_images(writer, image_infos)
     _write_pages(writer, title, image_infos, width, height)
 
 def _write_main_opf(
       writer: XMLWriter,
-      title: str,
+      title: str | None,
+      author: str | None,
       identifer: str,
       image_infos: list[tuple[Path, ImageFormat]],
       width: int,
@@ -64,6 +66,7 @@ def _write_main_opf(
       continue
     item_xml = Element("item", {
       "id": f"image_{id}",
+      "fallback": f"page_{id}",
       "href": href,
       "media-type": media_type,
     })
@@ -104,9 +107,9 @@ def _write_main_opf(
         child_xml.set("content", f"{width}x{height}")
       elif name == "primary-writing-mode":
         if read_to_left:
-          child_xml.set("content", "horizontal-lr")
-        else:
           child_xml.set("content", "horizontal-rl")
+        else:
+          child_xml.set("content", "horizontal-lr")
       elif name == "cover":
         if cover_id is None:
           to_removes.append(child_xml)
@@ -125,6 +128,12 @@ def _write_main_opf(
     elif child_xml.tag == "dc:identifier":
       child_xml.text = identifer
 
+    elif child_xml.tag == "dc:creator":
+      if author:
+        child_xml.text = author
+      else:
+        to_removes.append(child_xml)
+
   for to_remove in to_removes:
     metadata_xml.remove(to_remove)
 
@@ -132,7 +141,7 @@ def _write_main_opf(
 
 def _write_contents_ncx(
       writer: XMLWriter,
-      title: str,
+      title: str | None,
       identifer: str,
       image_infos: list[tuple[Path, ImageFormat]],
     ) -> None:
@@ -185,7 +194,7 @@ def _write_images(writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]
 
 def _write_pages(
       writer: XMLWriter,
-      title: str,
+      title: str | None,
       image_infos: list[tuple[Path, ImageFormat]],
       width: int,
       height: int,
