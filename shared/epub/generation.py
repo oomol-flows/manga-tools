@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element
 
 from .xml_writer import XMLWriter
 from .image import preprocess_images, ImageFormat
-from .utils import iter_ids, clone_element, find_element, split_tag_and_namespace
+from .utils import iter_ids, clone_element, find_element
 
 
 def generate_epub(
@@ -103,13 +103,11 @@ def _write_main_opf(
           to_removes.append(child_xml)
         else:
           child_xml.set("content", f"image_{cover_id}")
-    else:
-      pure_tag, _ = split_tag_and_namespace(child_xml.tag)
-      if pure_tag == "title":
-        if title:
-          child_xml.text = title
-        else:
-          to_removes.append(child_xml)
+    elif child_xml.tag == "dc:title":
+      if title:
+        child_xml.text = title
+      else:
+        to_removes.append(child_xml)
 
   for to_remove in to_removes:
     metadata_xml.remove(to_remove)

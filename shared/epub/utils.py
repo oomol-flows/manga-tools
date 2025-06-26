@@ -48,29 +48,3 @@ def iter_files(target_path: Path, relative_path: Path | None = None) -> Generato
           target_path=sub_path,
           relative_path=sub_relative_path,
         )
-
-_NS_PATTERN = re.compile(r"^{(.+)}")
-
-def extract_namespace(element: Element, root_ns: str | None = None) -> str:
-  matches = _NS_PATTERN.match(element.tag)
-  if not matches:
-    return ""
-
-  namespace = matches.group(1)
-  if root_ns is None or root_ns == namespace:
-    element.tag = _NS_PATTERN.sub("", element.tag)
-  if root_ns is None:
-    root_ns = namespace
-
-  for child in element:
-    extract_namespace(child, root_ns)
-
-  return namespace
-
-def split_tag_and_namespace(raw_tag: str) -> tuple[str, str | None]:
-  matches = _NS_PATTERN.match(raw_tag)
-  if not matches:
-    return raw_tag, None
-  namespace = matches.group(1)
-  tag = _NS_PATTERN.sub("", raw_tag)
-  return tag, namespace

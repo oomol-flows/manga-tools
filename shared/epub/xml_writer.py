@@ -3,7 +3,9 @@ import re
 from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
 from xml.etree.ElementTree import fromstring, tostring, Element
-from .utils import iter_files, extract_namespace
+
+from .namespace import norm_namespace
+from .utils import iter_files
 
 
 _MINETYPE_NAME = "mimetype"
@@ -42,9 +44,8 @@ class XMLWriter:
         if part and not part.isspace()
       ]
       element = fromstring(parts.pop())
+      element = norm_namespace(element)
       header = "\n".join(parts)
-      namespace = extract_namespace(element)
-      element.set("xmlns", namespace)
       return header, element
 
   def write(self, file: Path, header: str, element: Element):

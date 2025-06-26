@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <package version="3.0" unique-identifier="KBOOKID" xmlns="http://www.idpf.org/2007/opf"
   prefix="rendition: http://www.idpf.org/vocab/rendition/#">
-  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <meta property="rendition:layout">pre-paginated</meta>
     <meta property="rendition:spread">landscape</meta>
     <meta name="book-type" content="comic" />
@@ -13,6 +13,8 @@
     <meta name="primary-writing-mode" />
     <meta name="original-resolution" />
     <meta name="cover"/>
+    <dc:identifier id="KBOOKID">0000000000000-0000000000</dc:identifier>
+    <dc:language>zh-CN</dc:language>
     <dc:title></dc:title>
   </metadata>
   <manifest>
