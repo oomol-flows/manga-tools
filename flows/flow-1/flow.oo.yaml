@@ -11,7 +11,7 @@ nodes:
       - handle: title
         value:
       - handle: format
-        value: epub
+        value: pdf
       - handle: pack_path
         value: /oomol-driver/downloads/猎魔人
       - handle: author
@@ -35,8 +35,7 @@ nodes:
     title: "Uncarchive to directory #3"
     inputs_from:
       - handle: archive_path
-        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
-          GetComics.INFO.cbz
+        value: /oomol-driver/downloads/猎魔人.pdf
       - handle: output_path
         value: /oomol-driver/downloads/猎魔人
       - handle: clean_output_path

@@ -4,6 +4,7 @@ from oocana import Context
 from shutil import rmtree
 
 from shared.archive import unarchive_with_zip
+from shared.pdf import extract_from_pdf
 
 #region generated meta
 import typing
@@ -58,6 +59,13 @@ def main(params: Inputs, context: Context) -> Outputs:
     format = "epub"
   elif archive_suffix == ".pdf":
     format = "pdf"
+    extract_from_pdf(
+      dpi=96,
+      title=archive_path.name,
+      pdf_path=archive_path,
+      output_path=output_path,
+      progress=lambda p: context.report_progress(p * 100.0),
+    )
   else:
     raise ValueError(f"archive_path {archive_path} is not a supported archive format (only cbz, pdf, epub are supported)")
 
