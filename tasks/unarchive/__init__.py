@@ -57,10 +57,10 @@ def main(params: Inputs, context: Context) -> Outputs:
     )
   elif archive_suffix == ".epub":
     format = "epub"
+    raise NotImplementedError("TODO:")
   elif archive_suffix == ".pdf":
     format = "pdf"
     extract_from_pdf(
-      dpi=96,
       title=archive_path.name,
       pdf_path=archive_path,
       output_path=output_path,

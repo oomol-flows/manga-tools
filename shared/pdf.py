@@ -1,8 +1,8 @@
 import fitz
 
 from pathlib import Path
-from typing import cast, Any, Callable
-from PIL.Image import open as open_image, frombytes
+from typing import Callable, Generator
+from PIL import Image
 from fpdf import FPDF
 
 
@@ -21,7 +21,7 @@ def generate_pdf(
     pdf.set_title(title)
 
   for index, raw_file in enumerate(raw_files):
-    with open_image(raw_file) as image:
+    with Image.open(raw_file) as image:
       width_pt = image.width / dpi * _POINTS
       height_pt = image.height / dpi * _POINTS
       pdf.add_page(format=(width_pt, height_pt))
@@ -41,24 +41,28 @@ _SAVED_EXT = "png"
 def extract_from_pdf(
       title: str | None,
       pdf_path: Path,
-      dpi: int,
       output_path: Path,
       progress: Callable[[float], None],
     ) -> None:
 
-  with fitz.open(pdf_path) as pdf:
-    for index in range(pdf.page_count):
-      page = pdf.load_page(index)
-      matrix = fitz.Matrix(dpi / _POINTS, dpi / _POINTS)
-      pixmap = cast(Any, page).get_pixmap(matrix=matrix)
-      image = frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-
-      max_digits = len(str(pdf.page_count))
+  with fitz.open(pdf_path) as doc:
+    max_digits = len(str(doc.page_count))
+    for index, (image, format) in enumerate(_extract_images_from_pdf(doc, progress)):
       image_name = str(index + 1).zfill(max_digits)
-      image_name = f"{image_name}.{_SAVED_EXT}"
+      image_name = f"{image_name}.{format}"
       if title is not None:
         image_name = f"{title}-{image_name}"
       image_path = output_path / image_name
-      image.save(image_path)
+      with open(image_path, "wb") as file:
+        file.write(image)
 
-      progress(float(index + 1) / pdf.page_count)
+def _extract_images_from_pdf(doc: fitz.Document, progress: Callable[[float], None]) -> Generator[tuple[bytes, str], None, None]:
+  for index in range(doc.page_count):
+    page = doc.load_page(index)
+    for img_info in page.get_images():
+      xref = img_info[0]
+      image_dict = doc.extract_image(xref)
+      image: bytes = image_dict["image"]
+      format: str = image_dict['ext']
+      yield image, format
+    progress(float(index + 1) / doc.page_count)
