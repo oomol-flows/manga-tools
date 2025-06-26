@@ -1,5 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
+from datetime import datetime, timezone
 from xml.etree.ElementTree import Element
 
 from .xml_writer import XMLWriter
@@ -16,22 +17,25 @@ def generate_epub(
     ) -> None:
 
   image_infos, width, height = preprocess_images(image_paths, temp_path)
+  identifer = uuid4().hex
+
   with XMLWriter(output_path) as writer:
-    _write_main_opf(writer, title, image_infos, width, height, read_to_left)
-    _write_contents_ncx(writer, title, image_infos)
+    _write_main_opf(writer, title, identifer, image_infos, width, height, read_to_left)
+    _write_contents_ncx(writer, title, identifer, image_infos)
     _write_images(writer, image_infos)
     _write_pages(writer, title, image_infos, width, height)
 
 def _write_main_opf(
       writer: XMLWriter,
       title: str,
+      identifer: str,
       image_infos: list[tuple[Path, ImageFormat]],
       width: int,
       height: int,
       read_to_left: bool,
     ) -> None:
 
-  opf_path = Path("content", "main.opf")
+  opf_path = Path("main.opf")
   header, root_xml = writer.template(opf_path)
   manifest_xml = find_element(root_xml, "manifest")
 
@@ -71,11 +75,16 @@ def _write_main_opf(
     manifest_xml.append(item_xml)
 
   spine_xml = find_element(root_xml, "spine")
-  for id in iter_ids(image_infos):
-    item_xml = Element("itemref", {
-      "idref": f"page_{id}",
-    })
-    spine_xml.append(item_xml)
+  if read_to_left:
+    spine_xml.set("page-progression-direction", "rtl")
+  else:
+    spine_xml.set("page-progression-direction", "ltr")
+
+  for kind in ("page", "image"):
+    for id in iter_ids(image_infos):
+      spine_xml.append(Element("itemref", {
+        "idref": f"{kind}_{id}",
+      }))
 
   guide_xml = find_element(root_xml, "guide")
   reference_xml = find_element(guide_xml, "reference")
@@ -103,11 +112,18 @@ def _write_main_opf(
           to_removes.append(child_xml)
         else:
           child_xml.set("content", f"image_{cover_id}")
+      elif child_xml.get("property") == "dcterms:modified":
+        current_time = datetime.now(timezone.utc)
+        child_xml.text = current_time.strftime("%Y-%m-%dT%H:%M:%SZ")
+
     elif child_xml.tag == "dc:title":
       if title:
         child_xml.text = title
       else:
         to_removes.append(child_xml)
+
+    elif child_xml.tag == "dc:identifier":
+      child_xml.text = identifer
 
   for to_remove in to_removes:
     metadata_xml.remove(to_remove)
@@ -117,6 +133,7 @@ def _write_main_opf(
 def _write_contents_ncx(
       writer: XMLWriter,
       title: str,
+      identifer: str,
       image_infos: list[tuple[Path, ImageFormat]],
     ) -> None:
 
@@ -129,7 +146,7 @@ def _write_contents_ncx(
       continue
     name = sub_xml.get("name")
     if name == "dtb:uid":
-      sub_xml.set("content", uuid4().hex)
+      sub_xml.set("content", identifer)
     elif name == "dtb:totalPageCount":
       sub_xml.set("content", str(len(image_infos)))
     elif name == "dtb:maxPageNumber":
@@ -198,5 +215,5 @@ def _write_pages(
     img_xml.set("src", f"../images/image-{id}.{format.lower()}")
     img_xml.set("alt", id)
 
-    page_path = page_path.parent / f"page_{id}.html"
+    page_path = page_path.parent / f"page-{id}.html"
     writer.write(page_path, header, root_xml)

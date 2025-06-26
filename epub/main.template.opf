@@ -4,6 +4,7 @@
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <meta property="rendition:layout">pre-paginated</meta>
     <meta property="rendition:spread">landscape</meta>
+    <meta property="dcterms:modified"></meta>
     <meta name="book-type" content="comic" />
     <meta name="zero-gutter" content="true" />
     <meta name="zero-margin" content="true" />
@@ -13,15 +14,15 @@
     <meta name="primary-writing-mode" />
     <meta name="original-resolution" />
     <meta name="cover"/>
-    <dc:identifier id="KBOOKID">0000000000000-0000000000</dc:identifier>
+    <dc:identifier id="KBOOKID"></dc:identifier>
     <dc:language>zh-CN</dc:language>
     <dc:title></dc:title>
   </metadata>
   <manifest>
-    <item id="ncx" href="./contents.ncx" media-type="application/x-dtbncx+xml" />
-    <item id="css" href="../css/style.css" media-type="text/css"/>
+    <item id="ncx" href="./content/contents.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="css" href="./css/style.css" media-type="text/css"/>
   </manifest>
-  <spine page-progression-direction="rtl" toc="ncx">
+  <spine toc="ncx">
   </spine>
   <guide>
     <reference type="cover" title="Cover" />
