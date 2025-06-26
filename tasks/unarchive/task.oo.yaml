@@ -1,0 +1,65 @@
+executor:
+  name: python
+  options:
+    entry: __init__.py
+inputs_def:
+  - handle: archive_path
+    json_schema:
+      type: string
+      ui:widget: file
+      ui:options:
+        excludeAll: false
+        filters:
+          - name: CBZ
+            extensions:
+              - cbz
+          - name: EPUB
+            extensions:
+              - epub
+          - name: PDF
+            extensions:
+              - pdf
+  - handle: output_path
+    json_schema:
+      type: string
+      ui:widget: dir
+    nullable: true
+    value:
+  - handle: clean_output_path
+    json_schema:
+      type: boolean
+    value: true
+outputs_def:
+  - handle: output_path
+    json_schema:
+      type: string
+      ui:widget: dir
+  - handle: format
+    json_schema:
+      enum:
+        - cbz
+        - epub
+        - pdf
+      ui:options:
+        labels:
+          - CBZ
+          - EPUB
+          - PDF
+  - handle: title
+    json_schema:
+      type: string
+    nullable: true
+  - handle: author
+    json_schema:
+      type: string
+    nullable: true
+  - handle: reading_order
+    json_schema:
+      enum:
+        - to-right
+        - to-left
+      ui:options:
+        labels:
+          - from left to right
+          - from right to left
+title: Uncarchive to directory

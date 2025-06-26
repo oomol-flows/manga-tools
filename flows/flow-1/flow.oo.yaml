@@ -1,6 +1,6 @@
 nodes:
   - node_id: pack#1
-    title: "Pack images #1"
+    title: "Archive images"
     inputs_from:
       - handle: images
         value:
@@ -31,3 +31,14 @@ nodes:
       - handle: absolute_path
         value: true
     task: oomol-file::list_files_from_folder
+  - node_id: unarchive#3
+    title: "Uncarchive to directory #3"
+    inputs_from:
+      - handle: archive_path
+        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
+          GetComics.INFO.cbz
+      - handle: output_path
+        value: /oomol-driver/downloads/猎魔人
+      - handle: clean_output_path
+        value: true
+    task: self::unarchive
