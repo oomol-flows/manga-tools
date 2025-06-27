@@ -59,16 +59,14 @@ def main(params: Inputs, context: Context) -> Outputs:
     )
   elif archive_suffix == ".epub":
     format = "epub"
-    extract_from_epub(
-      title=title,
+    title, author = extract_from_epub(
       epub_path=archive_path,
       output_path=output_path,
       progress=on_progress,
     )
   elif archive_suffix == ".pdf":
     format = "pdf"
-    extract_from_pdf(
-      title=archive_path.name,
+    title, author = extract_from_pdf(
       pdf_path=archive_path,
       output_path=output_path,
       progress=on_progress,

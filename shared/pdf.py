@@ -39,22 +39,33 @@ def generate_pdf(
 _SAVED_EXT = "png"
 
 def extract_from_pdf(
-      title: str | None,
       pdf_path: Path,
       output_path: Path,
       progress: Callable[[float], None],
-    ) -> None:
+    ) -> tuple[str | None, str | None]:
+
+  title: str | None = None
+  author: str | None = None
 
   with fitz.open(pdf_path) as doc:
+    image_prefix: str = pdf_path.name
     max_digits = len(str(doc.page_count))
+    metadata = doc.metadata
+
+    if metadata is not None:
+      title = metadata.get("title", "No Title Found")
+      author = metadata.get("author", "No Author Found")
+      if title is not None:
+        image_prefix = title
+
     for index, (image, format) in enumerate(_extract_images_from_pdf(doc, progress)):
       image_name = str(index + 1).zfill(max_digits)
-      image_name = f"{image_name}.{format}"
-      if title is not None:
-        image_name = f"{title}-{image_name}"
+      image_name = f"{image_prefix}-{image_name}.{format}"
       image_path = output_path / image_name
       with open(image_path, "wb") as file:
         file.write(image)
+
+  return title, author
 
 def _extract_images_from_pdf(doc: fitz.Document, progress: Callable[[float], None]) -> Generator[tuple[bytes, str], None, None]:
   for index in range(doc.page_count):
@@ -65,4 +76,4 @@ def _extract_images_from_pdf(doc: fitz.Document, progress: Callable[[float], Non
       image: bytes = image_dict["image"]
       format: str = image_dict['ext']
       yield image, format
-    progress(float(index + 1) / doc.page_count)
+    progress(float(index) / doc.page_count)

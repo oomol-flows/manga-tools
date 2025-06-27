@@ -8,11 +8,10 @@ from ..utils import image_name
 
 
 def extract_from_epub(
-      title: str | None,
       epub_path: Path,
       output_path: Path,
       progress: Callable[[float], None],
-    ) -> None:
+    ) -> tuple[str | None, str | None]:
 
   with XMLReader(epub_path) as reader:
     rootfile_path = _read_rootfile_path(reader)
@@ -23,17 +22,22 @@ def extract_from_epub(
       page_xml: Element = reader.read_xml(page_file)
       image_files.extend(_search_image_files_in_page(page_xml, page_file))
 
+    title, author = _find_title_and_author(rootfile_xml)
     cover_file = _find_cover_image_file(rootfile_xml)
+
     if cover_file is not None:
       if cover_file in image_files:
         image_files.remove(cover_file)
       image_files.insert(0, cover_file)
 
+    image_prefix: str = epub_path.name
     for i, id in enumerate(iter_ids(image_files)):
       image_file = image_files[i]
-      name = image_name(id, title, image_file)
+      name = image_name(id, image_prefix, image_file)
       reader.extract(image_file, output_path / name)
       progress(float(i + 1) / len(image_files))
+
+    return title, author
 
 def _read_rootfile_path(reader: XMLReader) -> Path:
   container_xml = reader.read_xml(Path("META-INF", "container.xml"))
@@ -65,6 +69,16 @@ def _search_image_files_in_page(page_xml: Element, page_file: Path):
         base_file_path=page_file,
         relative_path=Path(src),
       )
+
+def _find_title_and_author(rootfile_xml: Element) -> tuple[str | None, str | None]:
+  title: str | None = None
+  author: str | None = None
+  for child in find_element(rootfile_xml, "metadata"):
+    if child.tag == "dc:title":
+      title = child.text
+    elif child.tag == "dc:creator":
+      author = child.text
+  return title, author
 
 def _find_cover_image_file(rootfile_xml: Element) -> Path | None:
   cover_id: str | None = None
