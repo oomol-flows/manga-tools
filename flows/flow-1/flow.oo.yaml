@@ -11,7 +11,7 @@ nodes:
       - handle: title
         value:
       - handle: format
-        value: pdf
+        value: epub
       - handle: pack_path
         value: /oomol-driver/downloads/猎魔人
       - handle: author
