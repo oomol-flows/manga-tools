@@ -1,5 +1,6 @@
 from pathlib import Path
 from uuid import uuid4
+from typing import Callable
 from datetime import datetime, timezone
 from xml.etree.ElementTree import Element
 
@@ -15,13 +16,19 @@ def generate_epub(
       temp_path: Path,
       output_path: Path,
       read_to_left: bool,
+      progress: Callable[[float], None],
     ) -> None:
 
-  _EpubGeneration(title, author, read_to_left).do(
+  _EpubGeneration(title, author, read_to_left, progress).do(
     image_paths=image_paths,
     temp_path=temp_path,
     output_path=output_path,
   )
+
+_STEP_MAIN_OPF = (0.0, 0.05)
+_STEP_CONTENTS_NCX = (0.05, 0.1)
+_STEP_IMAGES = (0.1, 0.9)
+_STEP_PAGES = (0.9, 1.0)
 
 class _EpubGeneration:
   def __init__(
@@ -29,12 +36,15 @@ class _EpubGeneration:
         title: str | None,
         author: str | None,
         read_to_left: bool,
+        progress: Callable[[float], None],
       ) -> None:
 
-    self._identifer: str = uuid4().hex
     self._title: str | None = title
     self._author: str | None = author
     self._read_to_left: bool = read_to_left
+    self._progress: Callable[[float], None] = progress
+    self._identifer: str = uuid4().hex
+    self._step: tuple[float, float] = (0.0, 0.0)
 
   def do(self, image_paths: list[Path], temp_path: Path, output_path: Path) -> None:
     image_infos, width, height = preprocess_images(image_paths, temp_path)
@@ -51,6 +61,7 @@ class _EpubGeneration:
         width: int, height: int,
       ) -> None:
 
+    self._update_step(_STEP_MAIN_OPF)
     opf_path = Path("main.opf")
     header, root_xml = writer.template(opf_path)
     manifest_xml = find_element(root_xml, "manifest")
@@ -154,6 +165,8 @@ class _EpubGeneration:
     writer.write(opf_path, header, root_xml)
 
   def _generate_contents_ncx(self, writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]) -> None:
+    self._update_step(_STEP_CONTENTS_NCX)
+
     ncx_path = Path("content", "contents.ncx")
     header, root_xml = writer.template(ncx_path)
     head_xml = find_element(root_xml, "head")
@@ -196,9 +209,12 @@ class _EpubGeneration:
     writer.write(ncx_path, header, root_xml)
 
   def _generate_images(self, writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]) -> None:
-    for id, (image_path, format) in zip(iter_ids(image_infos), image_infos):
+    self._update_step(_STEP_IMAGES)
+    for i, id in enumerate(iter_ids(image_infos)):
+      image_path, format = image_infos[i]
       href = f"content/images/image-{id}.{format.lower()}"
       writer.zip.write(image_path, href)
+      self._update_progress(i, len(image_infos))
 
   def _generate_pages(
         self,
@@ -208,10 +224,12 @@ class _EpubGeneration:
         height: int,
       ) -> None:
 
+    self._update_step(_STEP_PAGES)
     page_path = Path("content", "pages", "page.html")
     header, template_xml = writer.template(page_path)
 
-    for id, (_, format) in zip(iter_ids(image_infos), image_infos):
+    for i, id in enumerate(iter_ids(image_infos)):
+      _, format = image_infos[i]
       root_xml = clone_element(template_xml)
       head_xml = find_element(root_xml, "head")
       title_xml = find_element(head_xml, "title")
@@ -234,3 +252,14 @@ class _EpubGeneration:
 
       page_path = page_path.parent / f"page-{id}.html"
       writer.write(page_path, header, root_xml)
+      self._update_progress(i, len(image_infos))
+
+  def _update_step(self, step: tuple[float, float]) -> None:
+    self._step = step
+    self._progress(step[0])
+
+  def _update_progress(self, progress: int, max_progress: int) -> None:
+    begin, end = self._step
+    p = float(progress) / float(max_progress)
+    p =  begin + (end - begin) * p
+    self._progress(p)

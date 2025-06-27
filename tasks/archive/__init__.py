@@ -92,6 +92,7 @@ def main(params: Inputs, context: Context) -> Outputs:
       output_path=pack_path,
       temp_path=temp_path,
       read_to_left=(params["reading_order"] == "to-left"),
+      progress=lambda p: context.report_progress(100.0*p),
     )
   return { "pack_path": str(pack_path) }
 
