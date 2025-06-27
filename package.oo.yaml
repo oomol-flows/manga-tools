@@ -7,5 +7,5 @@ scripts:
     sudo apt-get install -y unrar
     poetry install --no-root
 dependencies:
-  oomol-file: 0.0.12
+  oomol-file: 0.0.13
   oomol-preview: 0.0.5

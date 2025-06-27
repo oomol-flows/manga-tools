@@ -4,7 +4,7 @@ from xml.etree.ElementTree import Element
 
 from .xml import XMLReader
 from .utils import iter_ids, find_element
-from ..utils import image_name
+from ..utils import image_name, sanitize_filename
 
 
 def extract_from_epub(
@@ -30,7 +30,7 @@ def extract_from_epub(
         image_files.remove(cover_file)
       image_files.insert(0, cover_file)
 
-    image_prefix: str = epub_path.stem
+    image_prefix = sanitize_filename(epub_path.stem)
     for i, id in enumerate(iter_ids(image_files)):
       image_file = image_files[i]
       name = image_name(id, image_prefix, image_file)

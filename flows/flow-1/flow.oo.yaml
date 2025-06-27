@@ -1,36 +1,4 @@
 nodes:
-  - node_id: pack#1
-    title: "Archive images"
-    inputs_from:
-      - handle: images
-        value:
-          []
-        from_node:
-          - node_id: list_files_from_folder#1
-            output_handle: file_paths
-      - handle: title
-        value:
-      - handle: format
-        value: epub
-      - handle: pack_path
-        value: /oomol-driver/downloads/猎魔人
-      - handle: author
-        value:
-      - handle: reading_order
-        value: to-right
-    task: self::archive
-  - node_id: list_files_from_folder#1
-    title: "List files from folder #1"
-    inputs_from:
-      - handle: folder
-        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children
-      - handle: sort
-        value: true
-      - handle: traverse
-        value: false
-      - handle: absolute_path
-        value: true
-    task: oomol-file::list_files_from_folder
   - node_id: unarchive#3
     title: "Uncarchive to directory #3"
     inputs_from:
@@ -76,3 +44,19 @@ nodes:
           - node_id: unarchive2images#2
             output_handle: images
     task: oomol-preview::images_preview
+  - node_id: archive_directory#5
+    title: "Archive directory #5"
+    inputs_from:
+      - handle: input_path
+        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children
+      - handle: format
+        value: epub
+      - handle: pack_path
+        value: /oomol-driver/downloads/猎魔人
+      - handle: title
+        value: null
+      - handle: author
+        value: null
+      - handle: reading_order
+        value: to-right
+    subflow: self::archive_directory

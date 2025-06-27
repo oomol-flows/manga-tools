@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Callable, Generator
 from PIL import Image
 from fpdf import FPDF
+from .utils import sanitize_filename
 
 
 _POINTS = 72 # inch = 72 points
@@ -46,7 +47,7 @@ def extract_from_pdf(
   author: str | None = None
 
   with fitz.open(pdf_path) as doc:
-    image_prefix: str = pdf_path.stem
+    image_prefix = sanitize_filename(pdf_path.stem)
     max_digits = len(str(doc.page_count))
     metadata = doc.metadata
 

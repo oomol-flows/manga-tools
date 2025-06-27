@@ -7,6 +7,7 @@ from shutil import rmtree
 from shared.archive import archive_with_zip
 from shared.pdf import generate_pdf
 from shared.epub import generate_epub
+from shared.utils import sanitize_filename
 
 
 #region generated meta
@@ -45,7 +46,7 @@ def main(params: Inputs, context: Context) -> Outputs:
     pack_path = Path(pack_path)
     pack_suffix = pack_path.suffix.lower()
     if title is None:
-      title = pack_path.stem
+      title = sanitize_filename(pack_path.stem)
     if pack_suffix in _SUFFIX_TUPPLE:
       suffix = cast(_Suffix, pack_suffix)
     else:

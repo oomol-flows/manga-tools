@@ -1,5 +1,6 @@
 from typing import TypeVar, Literal
 from pathlib import Path
+from shared.utils import sanitize_filename
 
 
 #region generated meta
@@ -25,7 +26,7 @@ def main(params: Inputs) -> Outputs:
   reading_order: Literal["to-right", "to-left"] = _merge(params["input_reading_order"], params["reading_order"])
   if title is None:
     source_path = Path(params["source_path"])
-    title = source_path.stem
+    title = sanitize_filename(source_path.stem)
 
   return {
     "title": title,
