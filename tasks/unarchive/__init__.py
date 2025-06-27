@@ -66,7 +66,7 @@ def main(params: Inputs, context: Context) -> Outputs:
     )
   elif archive_suffix == ".epub":
     format = "epub"
-    title, author = extract_from_epub(
+    title, author, reading_to_left = extract_from_epub(
       epub_path=archive_path,
       output_path=output_path,
       progress=on_progress,

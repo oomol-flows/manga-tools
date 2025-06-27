@@ -66,6 +66,7 @@ nodes:
     title: "Unarchive to images #2"
     inputs_from:
       - handle: archive_path
+        value: /oomol-driver/downloads/qq_manga.epub
     subflow: self::unarchive2images
   - node_id: images_preview#1
     title: "Images preview #1"

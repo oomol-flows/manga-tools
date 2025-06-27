@@ -11,7 +11,7 @@ def extract_from_epub(
       epub_path: Path,
       output_path: Path,
       progress: Callable[[float], None],
-    ) -> tuple[str | None, str | None]:
+    ) -> tuple[str | None, str | None, bool]:
 
   with XMLReader(epub_path) as reader:
     rootfile_path = _read_rootfile_path(reader)
@@ -22,7 +22,7 @@ def extract_from_epub(
       page_xml: Element = reader.read_xml(page_file)
       image_files.extend(_search_image_files_in_page(page_xml, page_file))
 
-    title, author = _find_title_and_author(rootfile_xml)
+    title, author, reading_to_left = _find_metadata(rootfile_xml)
     cover_file = _find_cover_image_file(rootfile_xml)
 
     if cover_file is not None:
@@ -37,7 +37,7 @@ def extract_from_epub(
       reader.extract(image_file, output_path / name)
       progress(float(i + 1) / len(image_files))
 
-    return title, author
+    return title, author, reading_to_left
 
 def _read_rootfile_path(reader: XMLReader) -> Path:
   container_xml = reader.read_xml(Path("META-INF", "container.xml"))
@@ -70,15 +70,23 @@ def _search_image_files_in_page(page_xml: Element, page_file: Path):
         relative_path=Path(src),
       )
 
-def _find_title_and_author(rootfile_xml: Element) -> tuple[str | None, str | None]:
+def _find_metadata(rootfile_xml: Element) -> tuple[str | None, str | None, bool]:
   title: str | None = None
   author: str | None = None
+  reading_to_left: bool = False
+
   for child in find_element(rootfile_xml, "metadata"):
     if child.tag == "dc:title":
       title = child.text
     elif child.tag == "dc:creator":
       author = child.text
-  return title, author
+
+  spine_xml = find_element(rootfile_xml, "spine")
+  direction = spine_xml.get("page-progression-direction")
+  if direction == "rtl":
+    reading_to_left = True
+
+  return title, author, reading_to_left
 
 def _find_cover_image_file(rootfile_xml: Element) -> Path | None:
   cover_id: str | None = None
