@@ -30,7 +30,7 @@ def extract_from_epub(
         image_files.remove(cover_file)
       image_files.insert(0, cover_file)
 
-    image_prefix: str = epub_path.name
+    image_prefix: str = epub_path.stem
     for i, id in enumerate(iter_ids(image_files)):
       image_file = image_files[i]
       name = image_name(id, image_prefix, image_file)

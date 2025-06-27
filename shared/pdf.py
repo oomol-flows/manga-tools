@@ -36,8 +36,6 @@ def generate_pdf(
 
   pdf.output(str(output_path))
 
-_SAVED_EXT = "png"
-
 def extract_from_pdf(
       pdf_path: Path,
       output_path: Path,
@@ -48,7 +46,7 @@ def extract_from_pdf(
   author: str | None = None
 
   with fitz.open(pdf_path) as doc:
-    image_prefix: str = pdf_path.name
+    image_prefix: str = pdf_path.stem
     max_digits = len(str(doc.page_count))
     metadata = doc.metadata
 

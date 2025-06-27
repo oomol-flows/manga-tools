@@ -3,7 +3,7 @@ from typing import Literal
 from oocana import Context
 from shutil import rmtree
 
-from shared.archive import unarchive_with_zip
+from shared.archive import unarchive_zip, unarchive_rar
 from shared.pdf import extract_from_pdf
 from shared.epub import extract_from_epub
 
@@ -15,7 +15,7 @@ class Inputs(typing.TypedDict):
   clean_output_path: bool
 class Outputs(typing.TypedDict):
   output_path: str
-  format: typing.Literal["cbz", "epub", "pdf"]
+  format: typing.Literal["cbz", "cbr", "epub", "pdf"]
   title: str | None
   author: str | None
   reading_order: typing.Literal["to-right", "to-left"]
@@ -44,7 +44,7 @@ def main(params: Inputs, context: Context) -> Outputs:
 
   archive_path = Path(params["archive_path"])
   archive_suffix = archive_path.suffix
-  format: Literal["cbz", "epub", "pdf"]
+  format: Literal["cbz", "cbr", "epub", "pdf"]
   title: str | None = None
   author: str | None = None
   reading_order: Literal["to-right", "to-left"] = "to-right"
@@ -52,7 +52,14 @@ def main(params: Inputs, context: Context) -> Outputs:
 
   if archive_suffix == ".cbz":
     format = "cbz"
-    unarchive_with_zip(
+    unarchive_zip(
+      input_path=archive_path,
+      output_path=output_path,
+      progress=on_progress,
+    )
+  elif archive_suffix == ".cbr":
+    format = "cbr"
+    unarchive_rar(
       input_path=archive_path,
       output_path=output_path,
       progress=on_progress,

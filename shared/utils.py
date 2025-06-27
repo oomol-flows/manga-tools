@@ -14,7 +14,7 @@ def extract_to(source: IO[bytes], target_path: PathLike) -> None:
       else:
         break
 
-def image_name(id: str, prefix: str, raw_path: Path) -> str:
+def image_name(id: str, prefix: str | None, raw_path: Path) -> str:
   file_name = id
   if prefix is not None:
     file_name: str = f"{prefix}-{file_name}"

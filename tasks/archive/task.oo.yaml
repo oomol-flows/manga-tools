@@ -81,8 +81,8 @@ inputs_def:
   - handle: author
     json_schema:
       type: string
-    nullable: true
     value:
+    nullable: true
   - handle: reading_order
     json_schema:
       enum:

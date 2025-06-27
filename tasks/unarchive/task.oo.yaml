@@ -13,6 +13,9 @@ inputs_def:
           - name: CBZ
             extensions:
               - cbz
+          - name: CBR
+            extensions:
+              - cbr
           - name: EPUB
             extensions:
               - epub
@@ -23,8 +26,8 @@ inputs_def:
     json_schema:
       type: string
       ui:widget: dir
-    nullable: true
     value:
+    nullable: true
   - handle: clean_output_path
     json_schema:
       type: boolean
@@ -38,11 +41,13 @@ outputs_def:
     json_schema:
       enum:
         - cbz
+        - cbr
         - epub
         - pdf
       ui:options:
         labels:
           - CBZ
+          - CBR
           - EPUB
           - PDF
   - handle: title

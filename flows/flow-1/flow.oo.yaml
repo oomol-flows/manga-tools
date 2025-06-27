@@ -45,15 +45,12 @@ nodes:
     title: "Unarchive to images #1"
     inputs_from:
       - handle: archive_path
-        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
-          GetComics.INFO.cbz
     subflow: self::unarchive2images
   - node_id: transform#1
     title: "Transform #1"
     inputs_from:
       - handle: source_path
-        value: /oomol-driver/downloads/manga/The Witcher v02 - Fox Children (2015)
-          GetComics.INFO.cbz
+        value: /oomol-driver/downloads/manga/Tokyo Ghost 001 (2015) GetComics.INFO.cbr
       - handle: target_path
         value: /oomol-driver/downloads/猎魔人.epub
       - handle: format
@@ -65,3 +62,16 @@ nodes:
       - handle: reading_order
         value:
     subflow: self::transform
+  - node_id: unarchive2images#2
+    title: "Unarchive to images #2"
+    inputs_from:
+      - handle: archive_path
+    subflow: self::unarchive2images
+  - node_id: images_preview#1
+    title: "Images preview #1"
+    inputs_from:
+      - handle: images
+        from_node:
+          - node_id: unarchive2images#2
+            output_handle: images
+    task: oomol-preview::images_preview

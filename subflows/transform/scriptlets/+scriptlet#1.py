@@ -1,8 +1,11 @@
-from typing import TypeVar
+from typing import TypeVar, Literal
+from pathlib import Path
+
 
 #region generated meta
 import typing
 class Inputs(typing.TypedDict):
+  source_path: str
   title: str | None
   author: str | None
   reading_order: typing.Literal["to-right", "to-left"]
@@ -17,10 +20,17 @@ class Outputs(typing.TypedDict):
 
 
 def main(params: Inputs) -> Outputs:
+  title = _merge(params["input_title"], params["title"])
+  author = _merge(params["input_author"], params["author"])
+  reading_order: Literal["to-right", "to-left"] = _merge(params["input_reading_order"], params["reading_order"])
+  if title is None:
+    source_path = Path(params["source_path"])
+    title = source_path.stem
+
   return {
-    "title": _merge(params["input_title"], params["title"]),
-    "author": _merge(params["input_author"], params["author"]),
-    "reading_order": _merge(params["input_reading_order"], params["reading_order"]),
+    "title": title,
+    "author": author,
+    "reading_order": reading_order,
   }
 
 _T = TypeVar("_T")
