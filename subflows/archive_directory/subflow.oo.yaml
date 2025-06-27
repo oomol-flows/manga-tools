@@ -174,3 +174,4 @@ outputs_from:
     from_node:
       - node_id: archive#1
         output_handle: pack_path
+description: pack images in the directory into a manga file in a specific format

@@ -139,3 +139,4 @@ outputs_from:
     from_node:
       - node_id: unarchive#1
         output_handle: format
+description: unpack the manga file into an array of images

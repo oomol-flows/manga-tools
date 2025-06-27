@@ -114,4 +114,4 @@ outputs_def:
             extensions:
               - pdf
 title: Archive images
-description: pack an array of images into a comic file in a specific format
+description: pack an array of images into a manga file in a specific format

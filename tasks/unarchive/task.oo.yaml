@@ -67,4 +67,5 @@ outputs_def:
         labels:
           - from left to right
           - from right to left
-title: Uncarchive to directory
+title: Unarchive to directory
+description: unpack the manga file and store the images in a directory

@@ -8,4 +8,9 @@ scripts:
     poetry install --no-root
 dependencies:
   oomol-file: 0.0.13
-  oomol-preview: 0.0.5
+name: manga-tools
+displayName: Manga tools
+description: convert manga file formats CBZ, CBR, EPUB, PDF to each other and
+  archive and unarchive.
+repository: https://github.com/oomol-flows/manga-tools
+releaseNotes: the first version
