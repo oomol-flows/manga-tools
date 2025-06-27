@@ -5,6 +5,7 @@ extension-pkg-whitelist=cv2
 [MESSAGES CONTROL]
 disable=
   C,
+  fixme,
   redefined-builtin,
   too-many-arguments,
 

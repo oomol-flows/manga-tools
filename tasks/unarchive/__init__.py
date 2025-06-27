@@ -5,6 +5,7 @@ from shutil import rmtree
 
 from shared.archive import unarchive_with_zip
 from shared.pdf import extract_from_pdf
+from shared.epub import extract_from_epub
 
 #region generated meta
 import typing
@@ -47,24 +48,30 @@ def main(params: Inputs, context: Context) -> Outputs:
   title: str | None = None
   author: str | None = None
   reading_order: Literal["to-right", "to-left"] = "to-right"
+  on_progress = lambda p: context.report_progress(p * 100.0)
 
   if archive_suffix == ".cbz":
     format = "cbz"
     unarchive_with_zip(
       input_path=archive_path,
       output_path=output_path,
-      progress=lambda p: context.report_progress(p * 100.0),
+      progress=on_progress,
     )
   elif archive_suffix == ".epub":
     format = "epub"
-    raise NotImplementedError("TODO:")
+    extract_from_epub(
+      title=title,
+      epub_path=archive_path,
+      output_path=output_path,
+      progress=on_progress,
+    )
   elif archive_suffix == ".pdf":
     format = "pdf"
     extract_from_pdf(
       title=archive_path.name,
       pdf_path=archive_path,
       output_path=output_path,
-      progress=lambda p: context.report_progress(p * 100.0),
+      progress=on_progress,
     )
   else:
     raise ValueError(f"archive_path {archive_path} is not a supported archive format (only cbz, pdf, epub are supported)")

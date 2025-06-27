@@ -4,7 +4,7 @@ from typing import Callable
 from datetime import datetime, timezone
 from xml.etree.ElementTree import Element
 
-from .xml_writer import XMLWriter
+from .xml import XMLWriter
 from .image import preprocess_images, ImageFormat
 from .utils import iter_ids, clone_element, find_element
 
@@ -162,7 +162,7 @@ class _EpubGeneration:
     for to_remove in to_removes:
       metadata_xml.remove(to_remove)
 
-    writer.write(opf_path, header, root_xml)
+    writer.write_xml(opf_path, header, root_xml)
 
   def _generate_contents_ncx(self, writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]) -> None:
     self._update_step(_STEP_CONTENTS_NCX)
@@ -206,15 +206,16 @@ class _EpubGeneration:
       nav_point_xml.append(content_xml)
       nav_map_xml.append(nav_point_xml)
 
-    writer.write(ncx_path, header, root_xml)
+    writer.write_xml(ncx_path, header, root_xml)
 
   def _generate_images(self, writer: XMLWriter, image_infos: list[tuple[Path, ImageFormat]]) -> None:
     self._update_step(_STEP_IMAGES)
     for i, id in enumerate(iter_ids(image_infos)):
       image_path, format = image_infos[i]
-      href = f"content/images/image-{id}.{format.lower()}"
-      writer.zip.write(image_path, href)
-      self._update_progress(i, len(image_infos))
+      image_name = f"image-{id}.{format.lower()}"
+      image_zip_file = Path("content") / "images" / image_name
+      writer.write(image_zip_file, image_path)
+      self._update_progress(i + 1, len(image_infos))
 
   def _generate_pages(
         self,
@@ -251,8 +252,8 @@ class _EpubGeneration:
       img_xml.set("alt", id)
 
       page_path = page_path.parent / f"page-{id}.html"
-      writer.write(page_path, header, root_xml)
-      self._update_progress(i, len(image_infos))
+      writer.write_xml(page_path, header, root_xml)
+      self._update_progress(i + 1, len(image_infos))
 
   def _update_step(self, step: tuple[float, float]) -> None:
     self._step = step

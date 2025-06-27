@@ -75,18 +75,18 @@ class _NamespaceNormalization:
   def migrate_namespaces(self) -> None:
     for namespace, element_ids in self._ns2ids.items():
       ns = _NS_ACRONYM.get(namespace, None)
-      assert ns is not None, "Unknown namespace: %s" % namespace
-      parent_id = self._find_nearest_common_parent_id(element_ids)
-      parent_element = self._nodes[parent_id].raw
-      xmlns_key = "xmlns"
-      if ns != _DEFAULT_KEY:
-        xmlns_key += f":{ns}"
-      parent_element.set(xmlns_key, namespace)
+      if ns is not None:
+        parent_id = self._find_nearest_common_parent_id(element_ids)
+        parent_element = self._nodes[parent_id].raw
+        xmlns_key = "xmlns"
+        if ns != _DEFAULT_KEY:
+          xmlns_key += f":{ns}"
+        parent_element.set(xmlns_key, namespace)
 
       for id in element_ids:
         node = self._nodes[id]
         tag = node.tag
-        if ns != _DEFAULT_KEY:
+        if ns is not None and ns != _DEFAULT_KEY:
           tag: str = f"{ns}:{tag}"
         node.raw.tag = tag
 

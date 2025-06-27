@@ -1,5 +1,3 @@
-import re
-
 from typing import Any, Generator
 from pathlib import Path
 from xml.etree.ElementTree import Element
@@ -30,21 +28,21 @@ def iter_ids(image_paths: list[Any]) -> Generator[str, None, None]:
     yield str(index + 1).zfill(max_digits)
 
 def iter_files(target_path: Path, relative_path: Path | None = None) -> Generator[Path, None, None]:
-   for sub_path in target_path.iterdir():
-      sub_name = sub_path.name
-      if sub_name.startswith("."):
-        continue
+  for sub_path in target_path.iterdir():
+    sub_name = sub_path.name
+    if sub_name.startswith("."):
+      continue
 
-      sub_relative_path = relative_path
-      if sub_relative_path is None:
-        sub_relative_path = Path(sub_name)
-      else:
-        sub_relative_path = sub_relative_path / sub_name
+    sub_relative_path = relative_path
+    if sub_relative_path is None:
+      sub_relative_path = Path(sub_name)
+    else:
+      sub_relative_path = sub_relative_path / sub_name
 
-      if sub_path.is_file():
-        yield sub_relative_path
-      elif sub_path.is_dir():
-        yield from iter_files(
-          target_path=sub_path,
-          relative_path=sub_relative_path,
-        )
+    if sub_path.is_file():
+      yield sub_relative_path
+    elif sub_path.is_dir():
+      yield from iter_files(
+        target_path=sub_path,
+        relative_path=sub_relative_path,
+      )

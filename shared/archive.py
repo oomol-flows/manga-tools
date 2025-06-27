@@ -1,6 +1,7 @@
 from typing import Any, Generator, Callable
 from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
+from .utils import extract_to, image_name
 
 
 def archive_with_zip(
@@ -18,11 +19,8 @@ def archive_with_zip(
 def _iter_files(title: str | None, raw_files: list[Path]) -> Generator[tuple[str, Path], Any, None]:
   max_digits = len(str(len(raw_files)))
   for index, raw_path in enumerate(raw_files):
-    file_name = str(index + 1).zfill(max_digits)
-    if title is not None:
-      file_name: str = f"{title}-{file_name}"
-    suffix = "".join(raw_path.suffixes)
-    file_name = f"{file_name}{suffix}"
+    id = str(index + 1).zfill(max_digits)
+    file_name = image_name(id, title, raw_path)
     yield file_name, raw_path
 
 def unarchive_with_zip(
@@ -36,13 +34,7 @@ def unarchive_with_zip(
     for i, file_path in enumerate(file_paths):
       target_path = output_path / file_path.name
       with zip.open(str(file_path)) as src:
-        with open(target_path, "wb") as dst:
-          while True:
-            chunk = src.read(16384)
-            if chunk:
-              dst.write(chunk)
-            else:
-              break
+        extract_to(src, target_path)
       progress(float(i + 1) / len(file_paths))
 
 def _read_files_of_root(zip: ZipFile) -> list[Path]:

@@ -35,7 +35,7 @@ nodes:
     title: "Uncarchive to directory #3"
     inputs_from:
       - handle: archive_path
-        value: /oomol-driver/downloads/猎魔人.pdf
+        value: /oomol-driver/downloads/猎魔人.epub
       - handle: output_path
         value: /oomol-driver/downloads/猎魔人
       - handle: clean_output_path
