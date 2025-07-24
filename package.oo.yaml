@@ -7,7 +7,7 @@ scripts:
     sudo apt-get install -y unrar
     poetry install --no-root
 dependencies:
-  oomol-file: 0.0.13
+  oomol-file: 0.0.14
 name: manga-tools
 displayName: Manga tools
 description: convert manga file formats CBZ, CBR, EPUB, PDF to each other and
