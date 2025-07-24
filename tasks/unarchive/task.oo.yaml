@@ -4,6 +4,7 @@ executor:
     entry: __init__.py
 inputs_def:
   - handle: archive_path
+    description: will unarchive this file
     json_schema:
       type: string
       ui:widget: file
@@ -23,23 +24,28 @@ inputs_def:
             extensions:
               - pdf
   - handle: output_path
+    description: The directory path where the unarchived image files are saved. If
+      not filled in, they will be set a specific path.
     json_schema:
       type: string
       ui:widget: dir
     value:
     nullable: true
   - handle: clean_output_path
+    description: Whether to clear all files in output_path before unarchive.
     json_schema:
       type: boolean
     value: true
 outputs_def:
   - handle: output_path
+    description: The directory path where the unarchived image files are saved
     json_schema:
       type: string
       ui:widget: dir
-  - group: Meta
+  - group: Informations
     collapsed: true
   - handle: format
+    description: manga file format
     json_schema:
       enum:
         - cbz
@@ -53,14 +59,20 @@ outputs_def:
           - EPUB
           - PDF
   - handle: title
+    description: The manga title extracted from the file, if the format is supported
+      and exists
     json_schema:
       type: string
     nullable: true
   - handle: author
+    description: The manga author extracted from the file, if the format is
+      supported and exists
     json_schema:
       type: string
     nullable: true
   - handle: reading_order
+    description: The manga reading order extracted from the file, if the format is
+      supported and exists
     json_schema:
       enum:
         - to-right
@@ -70,4 +82,4 @@ outputs_def:
           - from left to right
           - from right to left
 title: Unarchive to directory
-description: unpack the manga file and store the images in a directory
+description: unarchive the manga file and saved the images in a directory

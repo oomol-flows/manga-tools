@@ -1,5 +1,6 @@
 inputs_def:
   - handle: archive_path
+    description: will unarchive this file
     json_schema:
       type: string
       ui:widget: file
@@ -21,7 +22,8 @@ inputs_def:
     nullable: false
 outputs_def:
   - handle: images
-    description: Output
+    description: An array of image file paths extracted from the manga file. Each
+      image represents a page and is arranged in reading order.
     json_schema:
       type: array
       items:
@@ -59,9 +61,10 @@ outputs_def:
                 - .avif
       minItems: 0
     nullable: false
-  - group: Meta
+  - group: Informations
     collapsed: true
   - handle: format
+    description: manga file format
     json_schema:
       enum:
         - cbz
@@ -76,14 +79,20 @@ outputs_def:
           - PDF
     nullable: false
   - handle: title
+    description: The manga title extracted from the file, if the format is supported
+      and exists
     json_schema:
       type: string
     nullable: true
   - handle: author
+    description: The manga author extracted from the file, if the format is
+      supported and exists
     json_schema:
       type: string
     nullable: true
   - handle: reading_order
+    description: The manga reading order extracted from the file, if the format is
+      supported and exists
     json_schema:
       enum:
         - to-right
@@ -142,4 +151,4 @@ outputs_from:
     from_node:
       - node_id: unarchive#1
         output_handle: format
-description: unpack the manga file into an array of images
+description: unarchive the manga file into an array of images

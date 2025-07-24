@@ -1,5 +1,6 @@
 inputs_def:
   - handle: source_path
+    description: will transform this file
     json_schema:
       type: string
       ui:widget: file
@@ -20,6 +21,9 @@ inputs_def:
               - pdf
     nullable: false
   - handle: target_path
+    description: The saved path of the transformed file. If the file extension is
+      specified, the format will be overwritten based on the extension here. If
+      not filled in, it will be set to the specified path.
     json_schema:
       type: string
       ui:widget: save
@@ -37,9 +41,8 @@ inputs_def:
               - pdf
     value:
     nullable: true
-  - group: Meta
-    collapsed: true
   - handle: format
+    description: archive manga file format. If not filled in, the default is CBZ.
     json_schema:
       enum:
         - cbz
@@ -52,17 +55,22 @@ inputs_def:
           - PDF
     value:
     nullable: true
+  - group: Meta
+    collapsed: true
   - handle: title
+    description: If the target format supports meta information, specify the title here
     json_schema:
       type: string
     value:
     nullable: true
   - handle: author
+    description: If the target format supports meta information, specify the author here
     json_schema:
       type: string
     value:
     nullable: true
   - handle: reading_order
+    description: If the target format supports it, specify the manga reading order here
     json_schema:
       enum:
         - to-right
@@ -108,7 +116,7 @@ nodes:
         value: null
         from_flow:
           - input_handle: format
-      - handle: pack_path
+      - handle: archive_path
         value: null
         from_flow:
           - input_handle: target_path
@@ -262,5 +270,5 @@ outputs_from:
   - handle: target_path
     from_node:
       - node_id: archive#1
-        output_handle: pack_path
-description: convert manga file formats
+        output_handle: archive_path
+description: transform manga file formats

@@ -4,6 +4,7 @@ executor:
     entry: __init__.py
 inputs_def:
   - handle: images
+    description: Image file path array
     json_schema:
       type: array
       items:
@@ -43,6 +44,7 @@ inputs_def:
     value:
       []
   - handle: format
+    description: archive manga file format. If not filled in, the default is CBZ.
     json_schema:
       enum:
         - cbz
@@ -55,7 +57,10 @@ inputs_def:
           - PDF
     value:
     nullable: true
-  - handle: pack_path
+  - handle: archive_path
+    description: archived manga file path. If the file extension is specified, the
+      format will be overwritten based on the extension here. If not filled in,
+      it will be set to the specified path.
     json_schema:
       type: string
       ui:widget: save
@@ -76,16 +81,19 @@ inputs_def:
   - group: Meta
     collapsed: true
   - handle: title
+    description: If the target format supports meta information, specify the title here
     json_schema:
       type: string
     value:
     nullable: true
   - handle: author
+    description: If the target format supports meta information, specify the author here
     json_schema:
       type: string
     value:
     nullable: true
   - handle: reading_order
+    description: If the target format supports it, specify the manga reading order here
     json_schema:
       enum:
         - to-right
@@ -96,7 +104,7 @@ inputs_def:
           - from right to left
     value: to-right
 outputs_def:
-  - handle: pack_path
+  - handle: archive_path
     json_schema:
       type: string
       ui:widget: save
@@ -116,4 +124,4 @@ outputs_def:
             extensions:
               - pdf
 title: Archive images
-description: pack an array of images into a manga file in a specific format
+description: archive an array of images into a manga file in a specific format file
