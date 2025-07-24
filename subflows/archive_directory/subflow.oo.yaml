@@ -37,7 +37,7 @@ inputs_def:
     value:
     nullable: true
   - group: Meta
-    collapsed: false
+    collapsed: true
   - handle: title
     json_schema:
       type: string
@@ -111,6 +111,7 @@ nodes:
         from_flow:
           - input_handle: reading_order
     task: self::archive
+    progressWeight: 100
   - node_id: +python#1
     title: "List image files"
     icon: ":logos:python:"
