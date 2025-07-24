@@ -37,6 +37,8 @@ inputs_def:
               - pdf
     value:
     nullable: true
+  - group: Meta
+    collapsed: true
   - handle: format
     json_schema:
       enum:

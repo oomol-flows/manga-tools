@@ -73,6 +73,8 @@ inputs_def:
               - pdf
     value:
     nullable: true
+  - group: Meta
+    collapsed: true
   - handle: title
     json_schema:
       type: string

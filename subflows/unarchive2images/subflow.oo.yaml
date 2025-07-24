@@ -59,6 +59,8 @@ outputs_def:
                 - .avif
       minItems: 0
     nullable: false
+  - group: Meta
+    collapsed: true
   - handle: format
     json_schema:
       enum:
