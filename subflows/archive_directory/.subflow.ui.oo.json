@@ -30,6 +30,13 @@
           "x": -12.099611487947413,
           "y": -39.501942560262954
         }
+      },
+      "sections": {
+        "subflowInput": {
+          "groupCollapsed": {
+            "Meta": true
+          }
+        }
       }
     },
     "output": {

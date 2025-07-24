@@ -59,6 +59,8 @@ outputs_def:
                 - .avif
       minItems: 0
     nullable: false
+  - group: Meta
+    collapsed: true
   - handle: format
     json_schema:
       enum:
@@ -103,6 +105,7 @@ nodes:
       - handle: clean_output_path
         value: false
     task: self::unarchive
+    progressWeight: 100
   - node_id: list_files_from_folder#1
     title: "List files from folder #1"
     inputs_from:

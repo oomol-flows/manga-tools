@@ -37,6 +37,8 @@ inputs_def:
               - pdf
     value:
     nullable: true
+  - group: Meta
+    collapsed: true
   - handle: format
     json_schema:
       enum:
@@ -132,6 +134,7 @@ nodes:
           - node_id: +python#1
             output_handle: reading_order
     task: self::archive
+    progressWeight: 1000
   - node_id: unarchive2images#1
     title: "Unarchive to images #1"
     inputs_from:
@@ -139,6 +142,7 @@ nodes:
         from_flow:
           - input_handle: source_path
     subflow: self::unarchive2images
+    progressWeight: 1000
   - node_id: +python#1
     title: "Merge params"
     icon: ":logos:python:"

@@ -1,10 +1,10 @@
 inputs_def:
   - handle: input_path
+    description: Input
     json_schema:
       type: string
       ui:widget: dir
     nullable: false
-    description: Input
   - handle: format
     json_schema:
       enum:
@@ -16,8 +16,8 @@ inputs_def:
           - CBZ
           - EPUB
           - PDF
-    nullable: true
     value:
+    nullable: true
   - handle: pack_path
     json_schema:
       type: string
@@ -34,18 +34,20 @@ inputs_def:
           - name: PDF
             extensions:
               - pdf
-    nullable: true
     value:
+    nullable: true
+  - group: Meta
+    collapsed: true
   - handle: title
     json_schema:
       type: string
-    nullable: true
     value:
+    nullable: true
   - handle: author
     json_schema:
       type: string
-    nullable: true
     value:
+    nullable: true
   - handle: reading_order
     json_schema:
       enum:
@@ -55,8 +57,8 @@ inputs_def:
         labels:
           - from left to right
           - from right to left
-    nullable: false
     value: to-right
+    nullable: false
 outputs_def:
   - handle: pack_path
     json_schema:
@@ -109,6 +111,7 @@ nodes:
         from_flow:
           - input_handle: reading_order
     task: self::archive
+    progressWeight: 100
   - node_id: +python#1
     title: "List image files"
     icon: ":logos:python:"

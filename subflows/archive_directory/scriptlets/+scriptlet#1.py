@@ -1,6 +1,4 @@
 from pathlib import Path
-from oocana import Context
-
 
 #region generated meta
 import typing
@@ -9,6 +7,7 @@ class Inputs(typing.TypedDict):
 class Outputs(typing.TypedDict):
   images: list[str]
 #endregion
+
 
 _ENABLE_EXTS = (
   ".jpg", ".jpeg", ".jpe", ".jif", ".jfif", ".jfi",
@@ -20,7 +19,7 @@ _ENABLE_EXTS = (
   ".avif",
 )
 
-def main(params: Inputs, context: Context) -> Outputs:
+def main(params: Inputs) -> Outputs:
   input_path = Path(params["input_path"])
   if not input_path.exists():
     raise ValueError(f"Archive path {input_path} does not exist")
