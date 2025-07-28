@@ -116,7 +116,7 @@ nodes:
         from_flow:
           - input_handle: reading_order
     task: self::archive
-    progressWeight: 100
+    progress_weight: 100
   - node_id: +python#1
     title: "List image files"
     icon: ":logos:python:"
