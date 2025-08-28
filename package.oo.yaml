@@ -1,4 +1,4 @@
-version: 0.0.2
+version: 0.0.3
 icon: ./icon.png
 scripts:
   bootstrap: |
@@ -13,4 +13,4 @@ displayName: Manga tools
 description: convert manga file formats CBZ, CBR, EPUB, PDF to each other and
   archive and unarchive.
 repository: https://github.com/oomol-flows/manga-tools
-releaseNotes: add groups & descriptions.
+releaseNotes: add ci

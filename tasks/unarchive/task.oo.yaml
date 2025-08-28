@@ -83,3 +83,4 @@ outputs_def:
           - from right to left
 title: Unarchive to directory
 description: unarchive the manga file and saved the images in a directory
+private: true

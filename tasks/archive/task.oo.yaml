@@ -125,3 +125,4 @@ outputs_def:
               - pdf
 title: Archive images
 description: archive an array of images into a manga file in a specific format file
+private: true
