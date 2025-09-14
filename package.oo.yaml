@@ -1,4 +1,4 @@
-version: 0.0.4
+version: 0.0.5
 icon: ./icon.png
 scripts:
   bootstrap: |
@@ -12,4 +12,4 @@ name: manga-tools
 displayName: "%manga-tools%"
 description: "%convert-manga-file-formats-cbz-cbr-epub-pdf-to-each-other-and-ar%"
 repository: https://github.com/oomol-flows/manga-tools
-releaseNotes: i18n
+releaseNotes: update icon
