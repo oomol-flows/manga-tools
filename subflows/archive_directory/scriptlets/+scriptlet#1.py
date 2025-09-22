@@ -1,4 +1,5 @@
 from pathlib import Path
+from natsort import natsorted
 
 #region generated meta
 import typing
@@ -35,6 +36,6 @@ def main(params: Inputs) -> Outputs:
     image_names.append(file.name)
 
   images = [
-    str(input_path / name) for name in image_names
+    str(input_path / name) for name in natsorted(image_names)
   ]
   return { "images": images }
